@@ -1,0 +1,285 @@
+threagile_version: 1.0.0
+
+title: Multi-Modal LLM Application Threat Model
+
+date: 2024-06-13
+
+author:
+  name: Jane Smith
+  homepage: www.example.com
+
+management_summary_comment: >
+  This threat model identifies potential threats and vulnerabilities for a multi-modal Large Language Model (LLM) application, focusing on adversarial machine learning threats and necessary security measures.
+
+business_criticality: critical # values: archive, operational, important, critical, mission-critical
+
+business_overview:
+  description: >
+    The multi-modal LLM application integrates various data modalities (text, images, audio, etc.) to enhance the language model’s capabilities. This model identifies key assets, actors, and data flows involved in the application, with a focus on adversarial machine learning threats.
+
+questions: # simply use "" as answer to signal "unanswered"
+  How are the admin clients managed/protected against compromise?: "Managed by ABC Corp"
+  How are the development clients managed/protected against compromise?: "Managed by XYZ Ltd"
+  How are the build pipeline components managed/protected against compromise?: "Utilizing secure CI/CD practices"
+
+abuse_cases:
+  Multi-Modal Prompt Injection: >
+    As an attacker, I want to craft malicious inputs across multiple modalities (e.g., text, images) to manipulate the LLM into producing harmful or unintended outputs.
+  Adversarial Examples: >
+    As an attacker, I want to craft adversarial examples in different modalities to cause the multi-modal LLM system to misclassify or generate incorrect outputs.
+  Data Poisoning: >
+    As an attacker, I want to introduce malicious data during training to corrupt the model's behavior and outputs.
+  Model Extraction: >
+    As an attacker, I want to replicate the multi-modal LLM model by making repeated queries to the system and analyzing the outputs to create a similar model.
+  Training Data Inversion: >
+    As an attacker, I want to reconstruct the training data from the model to gain access to sensitive information.
+  Evasion Attacks: >
+    As an attacker, I want to modify inputs slightly to avoid detection or mislead the multi-modal LLM system.
+  Model Inversion: >
+    As an attacker, I want to infer sensitive attributes about the training data used by the multi-modal LLM model.
+  Privacy Attack: >
+    As an attacker, I want to extract personally identifiable information (PII) or other sensitive data from the model's responses, violating user privacy.
+  Contextual Manipulation: >
+    As an attacker, I want to manipulate the contextual data fed into the multi-modal LLM to generate biased or harmful outputs.
+  Cross-Modal Attack: >
+    As an attacker, I want to exploit interactions between different data modalities to confuse the model and cause unintended behavior.
+
+security_requirements:
+  Input Validation: Ensure strict validation of all input data across all modalities to prevent injection attacks and data corruption.
+  Authentication: Implement strong authentication mechanisms to protect against unauthorized access.
+  Data Encryption: Encrypt sensitive data both in transit and at rest to protect against data breaches.
+  Access Controls: Enforce strict access controls to limit exposure of sensitive data and system components.
+  Anomaly Detection: Implement monitoring and anomaly detection to identify and respond to unusual activities that may indicate an ongoing attack.
+  Privacy Protection: Apply techniques such as differential privacy to safeguard user data from being inferred or extracted from the model's outputs.
+  Adversarial Training: Incorporate adversarial training techniques to enhance the model's robustness against adversarial examples.
+  Model Monitoring: Continuously monitor the model's performance to detect and mitigate potential adversarial attacks and data drift.
+  Secure Training Data: Ensure the integrity and confidentiality of the training data to prevent data poisoning and other attacks.
+
+tags_available:
+  - linux
+  - python
+  - tensorflow
+  - pytorch
+  - aws
+  - azure
+  - gcp
+
+data_assets:
+  Text Inputs:
+    id: text-inputs
+    description: Text data submitted by users for processing by the multi-modal LLM system.
+    usage: business
+    origin: Users
+    owner: Multi-Modal LLM Application
+    quantity: very-many
+    confidentiality: restricted
+    integrity: operational
+    availability: important
+    justification_cia_rating: >
+      Text inputs are essential for the operation of the multi-modal LLM system, requiring protection against unauthorized access and modification.
+
+  Image Inputs:
+    id: image-inputs
+    description: Image data submitted by users for processing by the multi-modal LLM system.
+    usage: business
+    origin: Users
+    owner: Multi-Modal LLM Application
+    quantity: many
+    confidentiality: restricted
+    integrity: operational
+    availability: important
+    justification_cia_rating: >
+      Image inputs are crucial for enhancing the capabilities of the multi-modal LLM system, necessitating protection against unauthorized access and modification.
+
+  Audio Inputs:
+    id: audio-inputs
+    description: Audio data submitted by users for processing by the multi-modal LLM system.
+    usage: business
+    origin: Users
+    owner: Multi-Modal LLM Application
+    quantity: many
+    confidentiality: restricted
+    integrity: operational
+    availability: important
+    justification_cia_rating: >
+      Audio inputs are important for providing a comprehensive multi-modal experience, requiring protection against unauthorized access and modification.
+
+  Classification Results:
+    id: classification-results
+    description: Results of the multi-modal classification.
+    usage: business
+    origin: Multi-Modal LLM Application
+    owner: Multi-Modal LLM Application
+    quantity: many
+    confidentiality: restricted
+    integrity: operational
+    availability: important
+    justification_cia_rating: >
+      Classification results are crucial for providing feedback to users, necessitating protection against unauthorized access and modification.
+
+  Multi-Modal LLM Model:
+    id: multi-modal-llm-model
+    description: The core multi-modal model used for processing and generating outputs.
+    usage: devops
+    origin: Model Development Team
+    owner: Multi-Modal LLM Application
+    quantity: few
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      The multi-modal LLM model is the core asset of the system, requiring stringent protection to ensure its integrity and availability.
+
+  Training Data:
+    id: training-data
+    description: Data used for training the multi-modal LLM model.
+    usage: devops
+    origin: Various sources
+    owner: Multi-Modal LLM Application
+    quantity: very-many
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      Training data is essential for maintaining the accuracy and reliability of the multi-modal LLM model, requiring high confidentiality and integrity.
+
+  User Metadata:
+    id: user-metadata
+    description: Metadata associated with user interactions, such as IP addresses and timestamps.
+    usage: business
+    origin: Users
+    owner: Multi-Modal LLM Application
+    quantity: many
+    confidentiality: restricted
+    integrity: operational
+    availability: operational
+    justification_cia_rating: >
+      User metadata is necessary for monitoring and improving the multi-modal LLM system, requiring adequate protection to ensure operational integrity and availability.
+
+actors:
+  Users:
+    description: End-users interacting with the multi-modal LLM application.
+    motivation: Use the application for generating responses to their queries in various modalities.
+  Admins:
+    description: Administrators managing and maintaining the multi-modal LLM application.
+    motivation: Ensure the system is running smoothly and securely.
+  External Data Providers:
+    description: APIs and other external services providing data to the multi-modal LLM system.
+    motivation: Supply data for enhancing the responses generated by the LLM.
+  Attackers:
+    description: Malicious actors attempting to exploit vulnerabilities in the multi-modal LLM system.
+    motivation: Disrupt the system, steal data, or manipulate responses.
+
+technical_assets:
+  Multi-Modal LLM Server:
+    description: The server hosting the multi-modal LLM application.
+    owner: Multi-Modal LLM Application
+    technology: AWS EC2
+    tags:
+      - linux
+      - aws:ec2
+    security_requirements:
+      - Input Validation
+      - Authentication
+      - Data Encryption
+
+  External Data Sources:
+    description: External APIs providing data for the multi-modal LLM application.
+    owner: External Data Providers
+    technology: Various
+    tags:
+      - api
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  Model Storage:
+    description: Storage system for the multi-modal LLM model files.
+    owner: Multi-Modal LLM Application
+    technology: AWS S3
+    tags:
+      - aws:s3
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  User Interaction Interface:
+    description: Web interface or API through which users interact with the multi-modal LLM application.
+    owner: Multi-Modal LLM Application
+    technology: React, Node.js
+    tags:
+      - javascript
+      - react
+      - nodejs
+    security_requirements:
+      - Input Validation
+      - Authentication
+      - Data Encryption
+
+dataflows:
+  Text_Input_Submission:
+    source: Users
+    destination: Multi-Modal LLM Server
+    data_assets: [text-inputs]
+    protocol: HTTPS
+    description: >
+      Users submit text data to the multi-modal LLM application through a secure web interface.
+    security_requirements:
+      - Data Encryption
+      - Input Validation
+
+  Image_Input_Submission:
+    source: Users
+    destination: Multi-Modal LLM Server
+    data_assets: [image-inputs]
+    protocol: HTTPS
+    description: >
+      Users submit image data to the multi-modal LLM application through a secure web interface.
+    security_requirements:
+      - Data Encryption
+      - Input Validation
+
+  Audio_Input_Submission:
+    source: Users
+    destination: Multi-Modal LLM Server
+    data_assets: [audio-inputs]
+    protocol: HTTPS
+    description: >
+      Users submit audio data to the multi-modal LLM application through a secure web interface.
+    security_requirements:
+      - Data Encryption
+      - Input Validation
+
+  Classification_Result_Delivery:
+    source: Multi-Modal LLM Server
+    destination: Users
+    data_assets: [classification-results]
+    protocol: HTTPS
+    description: >
+      The classification results are delivered back to the users through a secure web interface.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  Model_Storage_Access:
+    source: Multi-Modal LLM Server
+    destination: Model Storage
+    data_assets: [multi-modal-llm-model]
+    protocol: AWS S3 API
+    description: >
+      The multi-modal LLM model is stored and accessed from an AWS S3 bucket.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  User_Metadata_Collection:
+    source: User Interaction Interface
+    destination: Multi-Modal LLM Server
+    data_assets: [user-metadata]
+    protocol: HTTPS
+    description: >
+      Metadata about user interactions is collected and sent to the multi-modal LLM server for analysis.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
