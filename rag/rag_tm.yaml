@@ -1,0 +1,234 @@
+threagile_version: 1.0.0
+
+title: LLM RAG Application Threat Model
+
+date: 2024-06-13
+
+author:
+  name: Jane Smith
+  homepage: www.example.com
+
+management_summary_comment: >
+  This threat model identifies potential threats and vulnerabilities for a Large Language Model Retrieval-Augmented Generation (LLM RAG) application, outlining necessary security measures.
+
+business_criticality: critical # values: archive, operational, important, critical, mission-critical
+
+business_overview:
+  description: >
+    The LLM RAG application enhances language models by integrating external data retrieval for more accurate and contextually relevant responses. This model identifies key assets, actors, and data flows involved in the application.
+
+questions: # simply use "" as answer to signal "unanswered"
+  How are the admin clients managed/protected against compromise?: "Managed by ABC Corp"
+  How are the development clients managed/protected against compromise?: "Managed by XYZ Ltd"
+  How are the build pipeline components managed/protected against compromise?: "Utilizing secure CI/CD practices"
+
+abuse_cases:
+  Denial-of-Service: >
+    As an attacker, I want to overwhelm the LLM RAG system with requests to render it unavailable to legitimate users.
+  Data Exfiltration: >
+    As an attacker, I want to extract sensitive data from the LLM RAG system to use or sell it maliciously.
+  Prompt Injection: >
+    As an attacker, I want to manipulate the input prompts to the LLM RAG system to produce harmful or unintended outputs.
+  Indirect Prompt Injection: >
+    As an attacker, I want to inject malicious content into external data sources that the LLM RAG system will retrieve and process, causing it to produce harmful or unintended outputs.
+  Model Poisoning: >
+    As an attacker, I want to introduce malicious data during training to corrupt the model's behavior and outputs.
+  Privacy Attack: >
+    As an attacker, I want to extract personally identifiable information (PII) or other sensitive data from the LLM RAG system's responses, violating user privacy.
+  Training Data Inversion: >
+    As an attacker, I want to reconstruct the training data from the LLM model to gain access to sensitive information.
+  Model Extraction: >
+    As an attacker, I want to replicate the LLM model by making repeated queries to the system and analyzing the outputs to create a similar model.
+  Adversarial Examples: >
+    As an attacker, I want to craft adversarial examples to manipulate the LLM model into making incorrect or harmful predictions.
+
+security_requirements:
+  Input Validation: Ensure strict validation of all input data to prevent injection attacks and data corruption.
+  Authentication: Implement strong authentication mechanisms to protect against unauthorized access.
+  Data Encryption: Encrypt sensitive data both in transit and at rest to protect against data breaches.
+  Access Controls: Enforce strict access controls to limit exposure of sensitive data and system components.
+  Anomaly Detection: Implement monitoring and anomaly detection to identify and respond to unusual activities that may indicate an ongoing attack.
+  Privacy Protection: Apply techniques such as differential privacy to safeguard user data from being inferred or extracted from the model's outputs.
+  Adversarial Training: Incorporate adversarial training techniques to enhance the model's robustness against adversarial examples.
+  Model Monitoring: Continuously monitor the model's performance to detect and mitigate potential adversarial attacks and data drift.
+
+tags_available:
+  - linux
+  - python
+  - tensorflow
+  - pytorch
+  - aws
+  - azure
+  - gcp
+
+data_assets:
+  User Queries:
+    id: user-queries
+    description: Queries submitted by users for processing by the LLM RAG system.
+    usage: business
+    origin: Users
+    owner: LLM RAG Application
+    quantity: very-many
+    confidentiality: restricted
+    integrity: operational
+    availability: important
+    justification_cia_rating: >
+      User queries are essential for the operation of the LLM RAG system, requiring protection against unauthorized access and modification.
+
+  Retrieved Data:
+    id: retrieved-data
+    description: Data retrieved from external sources to augment LLM responses.
+    usage: business
+    origin: External APIs
+    owner: LLM RAG Application
+    quantity: many
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      Retrieved data is crucial for generating accurate and contextually relevant responses, necessitating high integrity and availability.
+
+  LLM Model:
+    id: llm-model
+    description: The core language model used to generate responses.
+    usage: devops
+    origin: LLM Development Team
+    owner: LLM RAG Application
+    quantity: few
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      The LLM model is the core asset of the application, requiring stringent protection to ensure its integrity and availability.
+
+  Training Data:
+    id: training-data
+    description: Data used for training the LLM model.
+    usage: devops
+    origin: Various sources
+    owner: LLM RAG Application
+    quantity: very-many
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      Training data is essential for maintaining the accuracy and reliability of the LLM model, requiring high confidentiality and integrity.
+
+  User Metadata:
+    id: user-metadata
+    description: Metadata associated with user interactions, such as IP addresses and timestamps.
+    usage: business
+    origin: Users
+    owner: LLM RAG Application
+    quantity: many
+    confidentiality: restricted
+    integrity: operational
+    availability: operational
+    justification_cia_rating: >
+      User metadata is necessary for monitoring and improving the LLM RAG system, requiring adequate protection to ensure operational integrity and availability.
+
+actors:
+  Users:
+    description: End-users interacting with the LLM RAG application.
+    motivation: Use the application for generating responses to their queries.
+  Admins:
+    description: Administrators managing and maintaining the LLM RAG application.
+    motivation: Ensure the system is running smoothly and securely.
+  External Data Providers:
+    description: APIs and other external services providing data to the LLM RAG system.
+    motivation: Supply data for enhancing the responses generated by the LLM.
+  Attackers:
+    description: Malicious actors attempting to exploit vulnerabilities in the LLM RAG system.
+    motivation: Disrupt the system, steal data, or manipulate responses.
+
+technical_assets:
+  LLM RAG Server:
+    description: The server hosting the LLM RAG application.
+    owner: LLM RAG Application
+    technology: AWS EC2
+    tags:
+      - linux
+      - aws:ec2
+    security_requirements:
+      - Input Validation
+      - Authentication
+      - Data Encryption
+
+  External Data Sources:
+    description: External APIs providing data for the LLM RAG application.
+    owner: External Data Providers
+    technology: Various
+    tags:
+      - api
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  LLM Model Storage:
+    description: Storage system for the LLM model files.
+    owner: LLM RAG Application
+    technology: AWS S3
+    tags:
+      - aws:s3
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  User Interaction Interface:
+    description: Web interface or API through which users interact with the LLM RAG application.
+    owner: LLM RAG Application
+    technology: React, Node.js
+    tags:
+      - javascript
+      - react
+      - nodejs
+    security_requirements:
+      - Input Validation
+      - Authentication
+      - Data Encryption
+
+dataflows:
+  User_Query_Submission:
+    source: Users
+    destination: LLM RAG Server
+    data_assets: [user-queries]
+    protocol: HTTPS
+    description: >
+      Users submit queries to the LLM RAG application through a secure web interface.
+    security_requirements:
+      - Data Encryption
+      - Input Validation
+
+  Data_Retrieval:
+    source: LLM RAG Server
+    destination: External Data Sources
+    data_assets: [retrieved-data]
+    protocol: HTTPS
+    description: >
+      The LLM RAG server retrieves data from external APIs to enhance query responses.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  Model_Storage_Access:
+    source: LLM RAG Server
+    destination: LLM Model Storage
+    data_assets: [llm-model]
+    protocol: AWS S3 API
+    description: >
+      The LLM model is stored and accessed from an AWS S3 bucket.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  User_Metadata_Collection:
+    source: User Interaction Interface
+    destination: LLM RAG Server
+    data_assets: [user-metadata]
+    protocol: HTTPS
+    description: >
+      Metadata about user interactions is collected and sent to the LLM RAG server for analysis.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+

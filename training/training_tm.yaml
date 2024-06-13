@@ -1,0 +1,294 @@
+threagile_version: 1.0.0
+
+title: Machine Learning Training Process Threat Model
+
+date: 2024-06-13
+
+author:
+  name: Jane Smith
+  homepage: www.example.com
+
+management_summary_comment: >
+  This threat model identifies potential threats and vulnerabilities for the machine learning training process, focusing on training time attacks and other adversarial machine learning risks. The goal is to outline necessary security measures to protect the training data, environment, and the resulting models.
+
+business_criticality: critical # values: archive, operational, important, critical, mission-critical
+
+business_overview:
+  description: >
+    The machine learning training process involves collecting, processing, and utilizing data to create and refine models. This model identifies key assets, actors, and data flows involved in the training process, with a focus on adversarial attacks and other security threats.
+
+questions: # simply use "" as answer to signal "unanswered"
+  How is the training environment secured against unauthorized access?: "Isolated network and multi-factor authentication."
+  How is the integrity of the training data ensured?: "Data validation and cryptographic checksums."
+  How are the build pipeline components managed/protected against compromise?: "Utilizing secure CI/CD practices and regular security audits."
+
+abuse_cases:
+  Data Poisoning: >
+    As an attacker, I want to introduce malicious data into the training dataset to corrupt the model's behavior and outputs.
+  Label Flipping: >
+    As an attacker, I want to change the labels of the training data to mislead the model during training, causing incorrect predictions.
+  Backdoor Insertion: >
+    As an attacker, I want to insert a backdoor into the model during training, allowing me to trigger specific behaviors with certain inputs.
+  Model Extraction: >
+    As an attacker, I want to replicate the model by accessing the training process and analyzing the outputs to create a similar model.
+  Training Data Inversion: >
+    As an attacker, I want to reconstruct the training data from the model to gain access to sensitive information.
+  Hyperparameter Manipulation: >
+    As an attacker, I want to manipulate the hyperparameters used in the training process to degrade the model's performance.
+  Resource Exhaustion: >
+    As an attacker, I want to exhaust the resources (CPU, GPU, memory) of the training environment, causing delays or failures in the training process.
+  Adversarial Training Data: >
+    As an attacker, I want to include adversarial examples in the training data to make the model vulnerable to specific attacks during inference.
+  Privacy Attack: >
+    As an attacker, I want to extract personally identifiable information (PII) or other sensitive data from the trained model, violating user privacy.
+  Experiment Tracking Manipulation: >
+    As an attacker, I want to alter the experiment tracking records to falsify results or disrupt the training process.
+
+security_requirements:
+  Data Validation: Ensure strict validation of all training data to prevent data poisoning and label flipping.
+  Environment Isolation: Secure the training environment using network isolation, access controls, and multi-factor authentication.
+  Data Encryption: Encrypt sensitive data both in transit and at rest to protect against data breaches.
+  Access Controls: Enforce strict access controls to limit exposure of sensitive data and training environments.
+  Anomaly Detection: Implement monitoring and anomaly detection to identify and respond to unusual activities during the training process.
+  Privacy Protection: Apply techniques such as differential privacy to safeguard sensitive data in the training dataset.
+  Secure Hyperparameter Management: Protect hyperparameter configurations from unauthorized modifications.
+  Resource Monitoring: Continuously monitor resource usage to detect and mitigate resource exhaustion attacks.
+  Adversarial Training: Incorporate adversarial training techniques to enhance the model's robustness against adversarial examples.
+  Model Integrity Checks: Implement cryptographic checksums and integrity checks for the trained models.
+  Secure Experiment Tracking: Protect experiment tracking data and systems to ensure accurate and tamper-proof records of the training process.
+
+tags_available:
+  - linux
+  - python
+  - tensorflow
+  - pytorch
+  - aws
+  - azure
+  - gcp
+  - data-poisoning
+  - label-flipping
+  - backdoor-insertion
+  - experiment-tracking
+  - mlflow
+  - wandb
+
+data_assets:
+  Training Data:
+    id: training-data
+    description: Data used for training machine learning models.
+    usage: devops
+    origin: Various sources
+    owner: ML Training Team
+    quantity: very-many
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      Training data is essential for creating accurate and reliable models, requiring high confidentiality and integrity.
+
+  Hyperparameter Configurations:
+    id: hyperparameter-configurations
+    description: Configurations used for setting hyperparameters during model training.
+    usage: devops
+    origin: ML Engineers
+    owner: ML Training Team
+    quantity: few
+    confidentiality: restricted
+    integrity: critical
+    availability: important
+    justification_cia_rating: >
+      Hyperparameter configurations are critical for the performance of the models, requiring protection against unauthorized modifications.
+
+  Training Environment:
+    id: training-environment
+    description: The computational environment used for training models, including hardware and software.
+    usage: devops
+    origin: IT Infrastructure
+    owner: IT Department
+    quantity: few
+    confidentiality: restricted
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      The training environment is critical for executing the training process securely and efficiently, requiring stringent protection against unauthorized access and resource exhaustion.
+
+  Trained Models:
+    id: trained-models
+    description: The machine learning models resulting from the training process.
+    usage: business
+    origin: ML Training Team
+    owner: ML Training Team
+    quantity: few
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: >
+      Trained models are the core assets resulting from the training process, requiring stringent protection to ensure their integrity and availability.
+
+  Training Logs:
+    id: training-logs
+    description: Logs generated during the training process, including resource usage and anomalies.
+    usage: devops
+    origin: Training Environment
+    owner: ML Training Team
+    quantity: many
+    confidentiality: restricted
+    integrity: important
+    availability: operational
+    justification_cia_rating: >
+      Training logs are important for monitoring and auditing the training process, requiring protection against unauthorized access and tampering.
+
+  Experiment Tracking Data:
+    id: experiment-tracking-data
+    description: Records of experiments, including configurations, results, and metadata.
+    usage: devops
+    origin: Experiment Tracking System
+    owner: ML Training Team
+    quantity: many
+    confidentiality: restricted
+    integrity: critical
+    availability: important
+    justification_cia_rating: >
+      Experiment tracking data is essential for reproducibility and accountability in the training process, requiring protection against unauthorized modifications and tampering.
+
+actors:
+  ML Engineers:
+    description: Professionals responsible for designing, implementing, and managing the machine learning models and training processes.
+    motivation: Ensure the models are trained efficiently and securely.
+  IT Administrators:
+    description: Personnel managing the IT infrastructure and securing the training environment.
+    motivation: Maintain the integrity and security of the training infrastructure.
+  Attackers:
+    description: Malicious actors attempting to exploit vulnerabilities in the training process.
+    motivation: Disrupt the training process, steal data, or manipulate models.
+  Data Providers:
+    description: Entities providing data for training the models.
+    motivation: Supply high-quality data for accurate model training.
+
+technical_assets:
+  Training Servers:
+    description: Servers used for executing the machine learning training process.
+    owner: IT Department
+    technology: AWS EC2, GPU Clusters
+    tags:
+      - linux
+      - aws:ec2
+      - gpu
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+      - Resource Monitoring
+
+  Data Storage:
+    description: Storage system for training data and trained models.
+    owner: ML Training Team
+    technology: AWS S3
+    tags:
+      - aws:s3
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  Configuration Management System:
+    description: System for managing hyperparameter configurations and training scripts.
+    owner: ML Training Team
+    technology: Git, Configuration Management Tools
+    tags:
+      - git
+      - configuration-management
+    security_requirements:
+      - Access Controls
+      - Secure Hyperparameter Management
+
+  Monitoring and Logging System:
+    description: System for monitoring resource usage and logging training process activities.
+    owner: IT Department
+    technology: AWS CloudWatch, Elasticsearch
+    tags:
+      - monitoring
+      - logging
+    security_requirements:
+      - Data Encryption
+      - Anomaly Detection
+      - Access Controls
+
+  Experiment Tracking System:
+    description: System for tracking experiments, including configurations, results, and metadata.
+    owner: ML Training Team
+    technology: MLflow, Weights and Biases (WandB)
+    tags:
+      - experiment-tracking
+      - mlflow
+      - wandb
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+      - Secure Experiment Tracking
+
+dataflows:
+  Data_Collection:
+    source: Data Providers
+    destination: Data Storage
+    data_assets: [training-data]
+    protocol: HTTPS
+    description: >
+      Data providers supply training data, which is securely transferred and stored.
+    security_requirements:
+      - Data Encryption
+      - Input Validation
+
+  Model_Training:
+    source: Data Storage
+    destination: Training Servers
+    data_assets: [training-data, hyperparameter-configurations]
+    protocol: Secure File Transfer
+    description: >
+      Training data and hyperparameter configurations are securely transferred to the training servers.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  Model_Storage:
+    source: Training Servers
+    destination: Data Storage
+    data_assets: [trained-models]
+    protocol: Secure File Transfer
+    description: >
+      Trained models are securely transferred to the data storage system.
+    security_requirements:
+      - Data Encryption
+      - Access Controls
+
+  Log_Collection:
+    source: Training Servers
+    destination: Monitoring and Logging System
+    data_assets: [training-logs]
+    protocol: HTTPS
+    description: >
+      Logs from the training process are collected and sent to the monitoring and logging system for analysis.
+    security_requirements:
+      - Data Encryption
+      - Anomaly Detection
+
+  Configuration_Management:
+    source: Configuration Management System
+    destination: Training Servers
+    data_assets: [hyperparameter-configurations]
+    protocol: Secure File Transfer
+    description: >
+      Hyperparameter configurations and training scripts are managed and securely transferred from the configuration management system to the training servers.
+    security_requirements:
+      - Secure Hyperparameter Management
+      - Access Controls
+
+  Experiment_Tracking:
+    source: Training Servers
+    destination: Experiment Tracking System
+    data_assets: [experiment-tracking-data]
+    protocol: HTTPS
+    description: >
+      Data from training experiments, including configurations and results, are sent to the experiment tracking system.
+    security_requirements:
+      - Data Encryption
+      - Secure Experiment Tracking
+
